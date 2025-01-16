@@ -1,5 +1,8 @@
 LETTERS = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
 WORDS = []
+with open("possibleWords.txt", "r") as guessesFile:
+    for li in guessesFile.readlines():
+        WORDS.append(li.replace("\n", ""))
 
 GREEN_WEIGHT = 0.396
 GREEN_WEIGHT = 1.0
@@ -17,13 +20,11 @@ yellowMax = max(yellowCounts)
 greenMin = min([min(row) for row in greenCounts])
 greenMax = max([max(row) for row in greenCounts])
 
+def normalise(x, lowerBound, upperBound):
+    return (x - lowerBound) / (upperBound - lowerBound)
+
 YELLOW_SCORES = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
 GREEN_SCORES = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
-
-if __name__=="__main__":
-    with open("possibleWords.txt", "r") as guessesFile:
-        for li in guessesFile.readlines():
-            WORDS.append(li.replace("\n", ""))
 
 def lettercount(word, letter):
     count = 0
