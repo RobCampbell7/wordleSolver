@@ -5,6 +5,21 @@ GREEN_WEIGHT = 0.396
 GREEN_WEIGHT = 1.0
 YELLOW_WEIGHT = 1.0
 
+yellowCounts = [0 for i in range(26)]
+greenCounts = [[0 for i in range(26)] for i in range(5)]
+for word in WORDS:
+    for lPos in range(5):
+        yellowCounts[LETTERS.index(word[lPos])] += 1
+        greenCounts[lPos][LETTERS.index(word[lPos])] += 1
+
+yellowMin = min(yellowCounts)
+yellowMax = max(yellowCounts)
+greenMin = min([min(row) for row in greenCounts])
+greenMax = max([max(row) for row in greenCounts])
+
+YELLOW_SCORES = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
+GREEN_SCORES = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
+
 if __name__=="__main__":
     with open("possibleWords.txt", "r") as guessesFile:
         for li in guessesFile.readlines():
@@ -63,29 +78,14 @@ def bestGuess(wordLst = WORDS):
     elif len(wordLst) == 1:
         return wordLst[0]
     else:
-        yellowCounts = [0 for i in range(26)]
-        greenCounts = [[0 for i in range(26)] for i in range(5)]
-        for word in wordLst:
-            for lPos in range(5):
-                yellowCounts[LETTERS.index(word[lPos])] += 1
-                greenCounts[lPos][LETTERS.index(word[lPos])] += 1
-
-        yellowMin = min(yellowCounts)
-        yellowMax = max(yellowCounts)
-        greenMin = min([min(row) for row in greenCounts])
-        greenMax = max([max(row) for row in greenCounts])
-
-        yellowScores = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
-        greenScores = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
-
         scores = []
         for word in wordLst:
             scores.append(0)
             foundLetter = []
             for lPos in range(5):
-                scores[-1] += GREEN_WEIGHT * greenScores[lPos][LETTERS.index(word[lPos])]
+                scores[-1] += GREEN_WEIGHT * GREEN_SCORES[lPos][LETTERS.index(word[lPos])]
                 if word[lPos] not in foundLetter:
-                    scores[-1] += YELLOW_WEIGHT * yellowScores[LETTERS.index(word[lPos])]
+                    scores[-1] += YELLOW_WEIGHT * YELLOW_SCORES[LETTERS.index(word[lPos])]
                     foundLetter.append(word[lPos])
 
         return wordLst[maxIndex(scores)]
