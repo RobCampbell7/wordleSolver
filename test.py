@@ -13,7 +13,7 @@ GREEN_WEIGHT = 0.396
 YELLOW_WEIGHT = 1.0
 
 if __name__=="__main__":
-    with open("possibleWords.txt", "r") as guessesFile:
+    with open("possibleAnswers.txt", "r") as guessesFile:
         for li in guessesFile.readlines():
             WORDS.append(li.replace("\n", ""))
 
@@ -24,7 +24,7 @@ def lettercount(word, letter):
             count += 1
     return count
 
-def printResult(green, yellow):
+def printResult(green, yellow, guess):
     output = ""
     for i in range(5):
         if green[i] != ".":
@@ -33,8 +33,7 @@ def printResult(green, yellow):
             output += YELLOW_BOX
         else:
             output += GREY_BOX
-
-    print(output)
+    print(output + "    " + guess)
 
 def makeGuess(answer, guess):
     # Taken from ./parameterSelection/wordleSimMP.py
@@ -66,12 +65,12 @@ def runTest(answer):
     wordlst = WORDS
     guessedWords = []
     os.system("cls")
-    while success == False and len(wordlst) > 0 and guessCount < 110:
+    while success == False and len(wordlst) > 0 and guessCount < 6:
         guessCount += 1
         guess = bestGuess(wordlst)
         guessedWords.append(guess)
         green, yellow, grey = makeGuess(answer, guess)
-        printResult(green, yellow)
+        printResult(green, yellow, guess)
 
         if "." not in green:
             success = True
