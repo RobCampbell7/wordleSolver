@@ -45,8 +45,8 @@ def makeGuess(answer, guess):
             green += answer[i]
         else:
             green += "."
-        if guess[i] not in answer:
-            grey += guess[i]
+        # if guess[i] not in answer:
+        #     grey += guess[i]
     lettersToFind = [answer[i] for i in range(5) if green[i] == "."]
     for i in range(5):
         if green[i] == "." and guess[i] in lettersToFind:
@@ -54,6 +54,10 @@ def makeGuess(answer, guess):
             lettersToFind.remove(guess[i])
         else:
             yellow += "."
+    for i in range(5):
+        if green[i] == "." and yellow[i] == ".":
+            grey += guess[i]
+    
     return green, yellow, grey
 
 def runTest(answer):
@@ -82,7 +86,7 @@ def runTest(answer):
     # print(*guessedWords, sep=",\n")
 
 def shuffled(lst):
-    return sorted(lst, key = lambda x : 0 if x == "eater" else random())
+    return sorted(lst, key = lambda x : 0 if x == "bobby" else random())
 
 if __name__=="__main__":
     for testWord in shuffled(WORDS):
