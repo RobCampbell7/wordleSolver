@@ -44,34 +44,31 @@ def maxIndex(lst, ignoreIndexes=[]):
     return max(indexLst, key=lst.__getitem__)
 
 def knownFilter(word, green=".....", yellow=".....", grey = ""):
-    letterCount = {}
-    remaining = ""
     for i in range(5):
-        if green[i] == ".":
-            remaining += word[i]
-        elif word[i] != green[i]:
-            return False
-
-        letterCount[word[i]] = letterCount.get(word[i], 0) + 1
+        if green[i] != ".":
+            if word[i] == green[i]:
+                word = word[:i] + "." + word[i + 1:]
+            else:
+                return False
 
     for i in range(5):
-        if yellow[i] == ".":
-            remaining += word[i]
-        elif yellow[i] == word[i]:
-            return False
-        elif letterCount.get(yellow[i], 0) == 0:
-            return False
-        else:
-            letterCount[yellow[i]] -= 1
+        if yellow[i] != ".":
+            if word[i] == yellow[i]:
+                return False
+            else:
+               found = False
+               for j in range(5):
+                   if word[j] == yellow[i]:
+                       word = word[:j] + "." + word[j + 1:]
+                       found = True
+                       break
+               if found == False:
+                   return False 
 
-    for wrongChar in grey:
-        if wrongChar in remaining:
+    for i in range(5):
+        if word[i] != "." and word[i] in grey:
             return False
     return True
-
-def filterwordlst(greens="", yellows="", greys="", wordLst = WORDS): 
-    # filt = lambda word : all(knownFilter(word, greens[i], yellow[i], grey[i]) for i in range(len(greens)))
-    return [word for word in wordLst if all(knownFilter(word, greens, yellows, greys) for i in range(len(greens)))]
 
 def bestGuess(wordLst = WORDS):
     if len(wordLst) == 0:

@@ -17,31 +17,36 @@ if __name__=="__main__":
         for li in guessesFile.readlines():
             WORDS.append(li.replace("\n", ""))
 
-def knownFilter(word, green=".....", yellow=".....", grey = ""):
-    remaining = ""
-    letterCount = {}
+def knownFilter(word, green, yellow, grey):
+    if word == "bobby":
+        print("hello")
     for i in range(5):
         if green[i] != ".":
-            if green[i] != word[i]:
-                return False
+            if word[i] == green[i]:
+                word = word[:i] + "." + word[i + 1:]
             else:
-                letterCount[word[i]] += 1
+                return False
+
     for i in range(5):
         if yellow[i] != ".":
-            if yellow[i] == word[i]:
-                return False
-            elif letterCount.get(yellow[i], 0) == 0:
+            if word[i] == yellow[i]:
                 return False
             else:
-                letterCount[i] -= 1
-    # remaining = [char for char in letterCount.keys() if letterCount[char] > 0]
-    for char in letterCount.keys():
-        if letterCount[char] > 0:
-            if char in grey:
-                return False
+               found = False
+               for j in range(5):
+                   if word[j] == yellow[i]:
+                       word = word[:j] + "." + word[j + 1:]
+                       found = True
+                       break
+               if found == False:
+                   return False 
+
+    for i in range(5):
+        if word[i] != "." and word[i] in grey:
+            return False
     return True
 
-def lettercount(word, letter):
+def yellowLC(word, letter):
     count = 0
     for char in word:
         if char == letter:
@@ -125,8 +130,8 @@ def filterWordList(wordlst, green, yellow, grey):
 
 if __name__=="__main__":
     answer = "bobby"
-    words = ["saner", "pilot", "moody"]
-    wordLst = WORDS
+    words = ["saner", "pilot", "moody", "bobby"]
+    wordLst = words
     for word in words:
         green, yellow, grey = makeGuess(answer, word)
         wordLst = filterWordList(wordLst, green, yellow, grey)

@@ -9,7 +9,7 @@ GREY_BOX = "  "
 LETTERS = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
 WORDS = []
 
-GREEN_WEIGHT = 0.396
+GREEN_WEIGHT = 1.0
 YELLOW_WEIGHT = 1.0
 
 if __name__=="__main__":
@@ -25,7 +25,7 @@ def lettercount(word, letter):
     return count
 
 def printResult(green, yellow, guess):
-    output = ""
+    output = "|"
     for i in range(5):
         if green[i] != ".":
             output += GREEN_BOX
@@ -33,7 +33,7 @@ def printResult(green, yellow, guess):
             output += YELLOW_BOX
         else:
             output += GREY_BOX
-    print(output + "    " + guess)
+    print(output + "|   " + guess)
 
 def makeGuess(answer, guess):
     # Taken from ./parameterSelection/wordleSimMP.py
@@ -45,8 +45,7 @@ def makeGuess(answer, guess):
             green += answer[i]
         else:
             green += "."
-        # if guess[i] not in answer:
-        #     grey += guess[i]
+
     lettersToFind = [answer[i] for i in range(5) if green[i] == "."]
     for i in range(5):
         if green[i] == "." and guess[i] in lettersToFind:
