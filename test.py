@@ -79,15 +79,21 @@ def runTest(answer):
             success = True
         else:
             wordlst = [word for word in wordlst if word != guess and knownFilter(word, green, yellow, grey)]
-    if success == False:
-        print("FAILED : " + repr(answer))
-        input()
+    # if success == False:
+    #     print("FAILED : " + repr(answer))
+    #     input()
+    return success
     # print(*guessedWords, sep=",\n")
 
 def shuffled(lst):
     return sorted(lst, key = lambda x : 0 if x == "bobby" else random())
 
+failures = []
 if __name__=="__main__":
     for testWord in shuffled(WORDS):
-        runTest(testWord)
-        time.sleep(0.2)
+        solved = runTest(testWord)
+        if solved == False:
+            failures.append(testWord)
+        # time.sleep(0.2)
+    print("Failed words are:")
+    print(*failures, sep=",\n")
