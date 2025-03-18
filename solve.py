@@ -100,7 +100,7 @@ def remove(string, char):
 
 if __name__=="__main__":
     wordlst = WORDS
-    guess = bestGuess()
+    guess = wordlst
     print("  Initial guess : '" + guess.upper() + "'")
     for i in range(5):
         green = input("  Green letters : ").lower()
