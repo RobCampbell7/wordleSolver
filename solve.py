@@ -36,7 +36,7 @@ for word in WORDS:
             WORD_SCORES[word] += YELLOW_WEIGHT * YELLOW_SCORES[LETTERS.index(word[lPos])]
             foundLetter.append(word[lPos])
 
-WORDS.sort(key=lambda w : WORD_SCORES[w])
+WORDS.sort(key=lambda w : WORD_SCORES[w], reverse=True)
 
 def normalise(x, lowerBound, upperBound):
     return (x - lowerBound) / (upperBound - lowerBound)
@@ -100,7 +100,7 @@ def remove(string, char):
 
 if __name__=="__main__":
     wordlst = WORDS
-    guess = wordlst
+    guess = wordlst[0]
     print("  Initial guess : '" + guess.upper() + "'")
     for i in range(5):
         green = input("  Green letters : ").lower()
@@ -108,7 +108,7 @@ if __name__=="__main__":
             print("success")
             break
         yellow = input(" Yellow letters : ").lower()
-        grey = input("   Gray letters : ").lower().replace(", ", "").replace(" ", "")
+        grey = input("   Grey letters : ").lower().replace(", ", "").replace(" ", "")
         wordlst = [word for word in wordlst if knownFilter(word, green, yellow, grey)]
         if len(wordlst) == 0:
             print("No possible solutions")

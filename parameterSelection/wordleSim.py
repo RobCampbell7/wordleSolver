@@ -3,63 +3,58 @@ from random import sample
 import sys
 import os
 sys.path.append(os.pardir)
-from solve import lettercount, normalise, maxIndex, knownFilter, WORDS # type: ignore
+from solve import normalise, maxIndex, knownFilter
 
 LETTERS = ("a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z")
 LETTERS_DICT = {}
 WORDS = []
 
+for i in range(26):
+    LETTERS_DICT[LETTERS[i]] = i
+
 with open("..\possibleWords.txt", "r") as guessesFile:
     for li in guessesFile.readlines():
         WORDS.append(li.replace("\n", ""))
 
-for i in range(26):
-    LETTERS_DICT[LETTERS[i]] = i
+yellowCounts = [0 for i in range(26)]
+greenCounts = [[0 for i in range(26)] for i in range(5)]
+for word in WORDS:
+    for lPos in range(5):
+        yellowCounts[LETTERS_DICT[word[lPos]]] += 1
+        greenCounts[lPos][LETTERS_DICT[word[lPos]]] += 1
 
-def bestGuess(greenWeight, yellowWeight, wordLst = WORDS):
-    if len(wordLst) == 0:
-        return ""
-    elif len(wordLst) == 1:
-        return wordLst[0]
-    else:
-        yellowCounts = [0 for i in range(26)]
-        greenCounts = [[0 for i in range(26)] for i in range(5)]
-        for word in wordLst:
-            for lPos in range(5):
-                yellowCounts[LETTERS_DICT[word[lPos]]] += 1
-                greenCounts[lPos][LETTERS_DICT[word[lPos]]] += 1
+yellowMin = min(yellowCounts)
+yellowMax = max(yellowCounts)
+greenMin = min([min(row) for row in greenCounts])
+greenMax = max([max(row) for row in greenCounts])
 
-        yellowMin = min(yellowCounts)
-        yellowMax = max(yellowCounts)
-        greenMin = min([min(row) for row in greenCounts])
-        greenMax = max([max(row) for row in greenCounts])
+def normalise(x, lowerBound, upperBound):
+    return (x - lowerBound) / (upperBound - lowerBound)
 
-        yellowScores = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
-        greenScores = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
+YELLOW_SCORES = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
+GREEN_SCORES = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
 
-        scores = []
-        for word in wordLst:
-            scores.append(0)
-            foundLetter = []
-            for lPos in range(5):
-                scores[-1] += greenWeight * greenScores[lPos][LETTERS_DICT[word[lPos]]]
-                if word[lPos] not in foundLetter:
-                    scores[-1] += yellowWeight * yellowScores[LETTERS_DICT[word[lPos]]]
-                    foundLetter.append(word[lPos])
-
-        return wordLst[maxIndex(scores)]
+WORD_SCORES = {}
+for word in WORDS:
+    WORD_SCORES[word] = [0, 0]
+    foundLetter = []
+    for lPos in range(5):
+        WORD_SCORES[word][0] += GREEN_SCORES[lPos][LETTERS.index(word[lPos])]
+        if word[lPos] not in foundLetter:
+            WORD_SCORES[word][1] += YELLOW_SCORES[LETTERS.index(word[lPos])]
+            foundLetter.append(word[lPos])
 
 def makeGuess(answer, guess):
     green = ""
     yellow = ""
-    gray = ""
+    grey = ""
     for i in range(5):
         if answer[i] == guess[i]:
             green += answer[i]
         else:
             green += "."
         if guess[i] not in answer:
-            gray += guess[i]
+            grey += guess[i]
     lettersToFind = [answer[i] for i in range(5) if green[i] == "."]
     for i in range(5):
         if green[i] == "." and guess[i] in lettersToFind:
@@ -67,7 +62,7 @@ def makeGuess(answer, guess):
             lettersToFind.remove(guess[i])
         else:
             yellow += "."
-    return green, yellow, gray
+    return green, yellow, grey
 
 def wordleRun(answer, params):
     guessCount = 0
@@ -75,12 +70,12 @@ def wordleRun(answer, params):
     green = "....."
     yellow = "....."
     grey = ""
-    wordlst = WORDS
+    wordlst = sorted(WORDS, key = lambda w : params[0] * WORD_SCORES[w][0] + params[1] * WORD_SCORES[w][1], reverse=True)
     
     for i in range(6):
         wordlst = [word for word in wordlst if knownFilter(word, green, yellow, grey)]
         guessCount += 1
-        guess = bestGuess(*params, wordlst)
+        guess = wordlst.pop(0)
         green, yellow, grey = makeGuess(answer, guess)
 
         if "." not in green:
@@ -102,7 +97,7 @@ def averageRun(positionWeight, occurenceWeight, noOfTrials = -1):
     else:
         sampleWords = sample(WORDS, noOfTrials)
         denom = noOfTrials
-        
+
     totalGuesses = 0
     for word in sampleWords:
         guessNo = wordleRun(word, (positionWeight, occurenceWeight))
