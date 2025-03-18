@@ -26,12 +26,17 @@ def normalise(x, lowerBound, upperBound):
 YELLOW_SCORES = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
 GREEN_SCORES = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
 
-def lettercount(word, letter):
-    count = 0
-    for char in word:
-        if char == letter:
-            count += 1
-    return count
+WORD_SCORES = {}
+for word in WORDS:
+    WORD_SCORES[word] =  0
+    foundLetter = []
+    for lPos in range(5):
+        WORD_SCORES[word] += GREEN_WEIGHT * GREEN_SCORES[lPos][LETTERS.index(word[lPos])]
+        if word[lPos] not in foundLetter:
+            WORD_SCORES[word] += YELLOW_WEIGHT * YELLOW_SCORES[LETTERS.index(word[lPos])]
+            foundLetter.append(word[lPos])
+
+WORDS.sort(key=lambda w : WORD_SCORES[w], reverse=True)
 
 def normalise(x, lowerBound, upperBound):
     return (x - lowerBound) / (upperBound - lowerBound)
@@ -69,24 +74,6 @@ def knownFilter(word, green=".....", yellow=".....", grey = ""):
         if word[i] != "." and word[i] in grey:
             return False
     return True
-
-def bestGuess(wordLst = WORDS):
-    if len(wordLst) == 0:
-        return ""
-    elif len(wordLst) == 1:
-        return wordLst[0]
-    else:
-        scores = []
-        for word in wordLst:
-            scores.append(0)
-            foundLetter = []
-            for lPos in range(5):
-                scores[-1] += GREEN_WEIGHT * GREEN_SCORES[lPos][LETTERS.index(word[lPos])]
-                if word[lPos] not in foundLetter:
-                    scores[-1] += YELLOW_WEIGHT * YELLOW_SCORES[LETTERS.index(word[lPos])]
-                    foundLetter.append(word[lPos])
-
-        return wordLst[maxIndex(scores)]
     
 def combine(str1, str2):
     newStr = ""
@@ -113,7 +100,7 @@ def remove(string, char):
 
 if __name__=="__main__":
     wordlst = WORDS
-    guess = bestGuess()
+    guess = wordlst[0]
     print("  Initial guess : '" + guess.upper() + "'")
     for i in range(5):
         green = input("  Green letters : ").lower()
@@ -121,10 +108,10 @@ if __name__=="__main__":
             print("success")
             break
         yellow = input(" Yellow letters : ").lower()
-        grey = input("   Gray letters : ").lower().replace(", ", "").replace(" ", "")
+        grey = input("   Grey letters : ").lower().replace(", ", "").replace(" ", "")
         wordlst = [word for word in wordlst if knownFilter(word, green, yellow, grey)]
-        guess = bestGuess(wordlst)
-        if guess == "":
+        if len(wordlst) == 0:
             print("No possible solutions")
             break
-        print("\nBest next guess : '" + guess.upper() + "'")
+        else:
+            print("\nBest next guess : '" + guess.upper() + "'")
