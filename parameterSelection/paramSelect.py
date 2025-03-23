@@ -1,6 +1,6 @@
 from math import inf
 from particleSwarm import Swarm
-from wordleSimMP import averageRun, hardestWord, easisestWord
+from wordleSim import averageRun, hardestWord, easisestWord
 import multiprocessing as mp
 import csv
 

@@ -1,5 +1,5 @@
 import sys
-from wordleSimMP import averageRun, easisestWord, hardestWord
+from wordleSim import averageRun, easisestWord, hardestWord
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm

@@ -71,8 +71,7 @@ def wordleRun(answer, params):
     yellow = "....."
     grey = ""
     wordlst = sorted(WORDS, key = lambda w : params[0] * WORD_SCORES[w][0] + params[1] * WORD_SCORES[w][1], reverse=True)
-    
-    for i in range(6):
+    while success != True:
         wordlst = [word for word in wordlst if knownFilter(word, green, yellow, grey)]
         guessCount += 1
         guess = wordlst.pop(0)
