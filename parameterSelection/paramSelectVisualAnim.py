@@ -40,6 +40,7 @@ def manhattan(x1, x2, y1, y2):
 def nearestValue(x, y, valueDict):
     return valueDict[min(valueDict.keys(), key=lambda c : dist2(x, y, *c))]
 
+# fill a 500x500 grid with the nearest sampled value, one frame of the animation
 def voronoi(valueDict):
     xField, yField = np.meshgrid(np.linspace(0, 1, 500), np.linspace(0, 1, 500))
     zField = np.vectorize(lambda x, y : nearestValue(x, y, valueDict))(xField, yField)
@@ -60,6 +61,7 @@ with open("particlePositions.csv", "r") as posFile:
 
             for i in range(len(row) // 3):
                 valueDict[(float(row[3 * i]), float(row[3 * i + 1]))] = float(row[3 * i + 2])
+            # snapshot after each iteration so later frames include all earlier points
             rawData.append(deepcopy(valueDict))
             # data.append(voronoi(valueDict)[2])
             # particlePositions.append([float(x) for x in row])

@@ -35,6 +35,7 @@ def printResult(green, yellow, guess):
             output += GREY_BOX
     print(output + "|   " + guess)
 
+# work out the green / yellow / grey clues wordle would give for a guess
 def makeGuess(answer, guess):
     # Taken from ./parameterSelection/wordleSimMP.py
     green = ""
@@ -59,6 +60,7 @@ def makeGuess(answer, guess):
     
     return green, yellow, grey
 
+# play one game against a known answer, true if solved in 6 guesses
 def runTest(answer):
     guessCount = 0
     success = False
@@ -85,6 +87,7 @@ def runTest(answer):
     return success
     # print(*guessedWords, sep=",\n")
 
+# random order, but always puts "bobby" first
 def shuffled(lst):
     return sorted(lst, key = lambda x : 0 if x == "bobby" else random())
 

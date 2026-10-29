@@ -64,6 +64,7 @@ def printResult(green, yellow, guess):
             output += GREY_BOX
     print(output + "    " + guess)
 
+# work out the green / yellow / grey clues wordle would give for a guess
 def makeGuess(answer, guess):
     # Taken from ./parameterSelection/wordleSimMP.py
     green = ""
@@ -128,6 +129,7 @@ def filterWordList(wordlst, green, yellow, grey):
             print("AGH FUCK")
     return newWordList
 
+# check the filter keeps the answer in the list through a fixed set of guesses
 if __name__=="__main__":
     answer = "bobby"
     words = ["saner", "pilot", "moody", "bobby"]

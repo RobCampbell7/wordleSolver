@@ -5,6 +5,7 @@ from copy import deepcopy
 from itertools import repeat
 from math import isqrt, sqrt
 
+# l items centred on i, negative indexes wrap round to the end of the list
 def neighbourhood(lst, i, l):
     pointer = i - (l//2)
     nh = []
@@ -44,6 +45,7 @@ def hexagonalDistribution(n, xLimits, yLimits):
 
     return points[:n]
 
+# spread n starting points on a roughly square grid
 def gridDistribution(n, xLimits, yLimits):
     cols = isqrt(n)
     rows = (n + cols - 1) // cols
@@ -58,6 +60,7 @@ def gridDistribution(n, xLimits, yLimits):
     points = [(x, y) for x in xCoords for y in yCoords][:n]
     return points
 
+# particle swarm over two parameters, minimising fitnessFunc(x, y)
 class Swarm:
     class particle:
         def __init__(self, greaterSwarm, xPos=None, yPos=None, xBound=[-1, 1], yBound=[-1, 1]):
@@ -82,6 +85,7 @@ class Swarm:
             r1 = random.uniform(0, 1)
             r2 = random.uniform(0, 1)
 
+            # standard pso update: inertia W, pull towards own best (C1) and towards the swarm best (C2)
             self.vx *= self.swarm.W
             self.vx += self.swarm.C1 * r1 * (self.best[0] - self.px)
             self.vx += self.swarm.C2 * r2 * (nhbest[0] - self.px)

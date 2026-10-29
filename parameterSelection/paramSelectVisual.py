@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 #         distanceHash[(x1, y1, x2, y2)] = ((x1-x2)**2 + (y1-y2)**2)**0.5
 #     return distanceHash[(x1, y1, x2, y2)]
 
+# squared distance is enough for finding the nearest point, no need for the sqrt
 @cache
 def dist2Calc(x1, y1, x2, y2):
     return (x1-x2)**2 + (y1-y2)**2
@@ -25,6 +26,7 @@ def dist2(x1, y1, x2, y2):
 def manhattan(x1, x2, y1, y2):
     return x1 + y1 - x2 - y2
 
+# value of the closest sampled point, so the plot ends up as a voronoi style map
 def nearestValue(x, y):
     return valueDict[min(valueDict.keys(), key=lambda c : dist2(x, y, *c))]
 
@@ -40,6 +42,7 @@ particlePositions = []
 data = []
 # rawData = []
 valueDictonaries = []
+# every position any particle visited, mapped to its fitness
 with open("particlePositions.csv", "r") as posFile:
     valueDict = {}
     for row in csv.reader(posFile):

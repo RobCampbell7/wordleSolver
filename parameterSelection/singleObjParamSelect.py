@@ -16,6 +16,7 @@ def objective(x):
     x = averageRun(x, 1, 2000)
     return x
 
+# bayesian optimisation of the green weight only, gaussian process as the surrogate
 def surrogate(model, X):
 	with catch_warnings():
 		simplefilter("ignore")
@@ -31,6 +32,7 @@ def acquisition(X, Xsamples, model):
 	probs = norm.cdf((mu - best) / (std+1E-9))
 	return probs
  
+# try 100 random weights and pick the one the acquisition function rates highest
 def optAcquisition(X, y, model):
 	# random search, generate random samples
 	Xsamples = np.random.random(100)

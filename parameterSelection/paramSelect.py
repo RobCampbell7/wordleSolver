@@ -11,7 +11,9 @@ if __name__=="__main__":
     c2 = 1
     iterNo = 200
     noOfTrials = 1000
+    # search both weights in [0, 1], each particle is scored on a sample of noOfTrials words
     swarm = Swarm(n, lambda p1, p2 : averageRun(p1, p2, noOfTrials), w, c1, c2, (0, 1), (0, 1), False)
+    # one row per iteration: x, y, fitness for every particle, read by the visualisers
     with open("particlePositions.csv", "w") as posFile:
         writer = csv.writer(posFile)
         data = []

@@ -8,6 +8,7 @@ GREEN_WEIGHT = 0.396
 GREEN_WEIGHT = 1.0
 YELLOW_WEIGHT = 1.0
 
+# count how often each letter turns up anywhere (yellow) and in each position (green)
 yellowCounts = [0 for i in range(26)]
 greenCounts = [[0 for i in range(26)] for i in range(5)]
 for word in WORDS:
@@ -23,9 +24,12 @@ greenMax = max([max(row) for row in greenCounts])
 def normalise(x, lowerBound, upperBound):
     return (x - lowerBound) / (upperBound - lowerBound)
 
+# scale counts to 0-1 so the two kinds of score can be weighted against each other
 YELLOW_SCORES = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
 GREEN_SCORES = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
 
+# word score = positional score for every letter + occurrence score for each distinct letter,
+# so repeated letters don't get counted twice
 WORD_SCORES = {}
 for word in WORDS:
     WORD_SCORES[word] =  0
@@ -36,6 +40,7 @@ for word in WORDS:
             WORD_SCORES[word] += YELLOW_WEIGHT * YELLOW_SCORES[LETTERS.index(word[lPos])]
             foundLetter.append(word[lPos])
 
+# best scoring words first, so the top of the list is the next guess
 WORDS.sort(key=lambda w : WORD_SCORES[w], reverse=True)
 
 def normalise(x, lowerBound, upperBound):
@@ -48,6 +53,8 @@ def maxIndex(lst, ignoreIndexes=[]):
     indexLst = [i for i in range(len(lst)) if i not in ignoreIndexes]
     return max(indexLst, key=lst.__getitem__)
 
+# true if word fits the clues. matched letters get swapped for '.' so a letter
+# used for one clue can't be used again for another (handles double letters)
 def knownFilter(word, green=".....", yellow=".....", grey = ""):
     for i in range(5):
         if green[i] != ".":
@@ -75,6 +82,7 @@ def knownFilter(word, green=".....", yellow=".....", grey = ""):
             return False
     return True
     
+# merge two clue strings, first one wins where both have a letter
 def combine(str1, str2):
     newStr = ""
     for i in range(5):

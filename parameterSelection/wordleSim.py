@@ -2,6 +2,7 @@ from copy import deepcopy
 from random import sample
 import sys
 import os
+# so solve.py in the folder above can be imported
 sys.path.append(os.pardir)
 from solve import normalise, maxIndex, knownFilter
 
@@ -34,6 +35,7 @@ def normalise(x, lowerBound, upperBound):
 YELLOW_SCORES = [normalise(value, yellowMin, yellowMax) for value in yellowCounts]
 GREEN_SCORES = [[normalise(value, greenMin, greenMax) for value in row] for row in greenCounts]
 
+# keep the positional and occurrence scores separate so the weights can be varied per run
 WORD_SCORES = {}
 for word in WORDS:
     WORD_SCORES[word] = [0, 0]
@@ -64,6 +66,7 @@ def makeGuess(answer, guess):
             yellow += "."
     return green, yellow, grey
 
+# play one game with the given (position, occurrence) weights, returns number of guesses
 def wordleRun(answer, params):
     guessCount = 0
     success = False
@@ -88,7 +91,9 @@ def wordleRun(answer, params):
 def tupleSum(t1, t2):
     return tuple((t1[0] + t2[0], t1[1] + t2[1]))
 
+# running (total guesses, games) per word, used to find the hardest and easiest words
 guessSums = {}
+# average guesses over a random sample of answers, this is the fitness being minimised
 def averageRun(positionWeight, occurenceWeight, noOfTrials = -1):
     if noOfTrials < 1:
         sampleWords = WORDS
