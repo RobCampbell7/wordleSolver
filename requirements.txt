@@ -1,0 +1,5 @@
+numpy
+matplotlib
+scipy
+scikit-learn
+win11toast; sys_platform == "win32"
